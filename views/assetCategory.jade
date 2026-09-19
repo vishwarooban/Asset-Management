@@ -37,3 +37,8 @@ html
                     td= category.id
                     td= category.category_name
                     td= category.status
+
+        script.
+            document.querySelectorAll('table').forEach(function(table) {
+                new DataTable(table);
+            })
