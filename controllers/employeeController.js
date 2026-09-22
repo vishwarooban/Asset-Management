@@ -1,8 +1,7 @@
 const { Employee } = require("../models");
 const { Op } = require("sequelize");
 
-
-// SHOW AND VIEW EMPLOYEES
+                           // SHOW AND VIEW EMPLOYEES
 
 exports.showEmployeeForm = async (req, res) => {
     try {
@@ -34,36 +33,32 @@ exports.showEmployeeForm = async (req, res) => {
         const employees = await Employee.findAll({
             where: where
         });
-
         res.render("employee", {
             employees: employees,
             message: req.query.message
         });
-
     } catch (error) {
         console.log(error.message);
         res.send("error loading employees");
     }
 };
 
-
-// ADD EMPLOYEE
+                        // ADD EMPLOYEE
 
 exports.addEmployee = async (req, res) => {
     try {
 
-        const {
-            employee_code,
-            employee_name,
-            email,
-            phone
-        } = req.body;
-
-        await Employee.create({
-            employee_code,
-            employee_name,
-            email,
-            phone,
+        const {employee_code, employee_name, email, phone} = req.body;
+              
+        //phone no 
+        if (!/^[0-9]{10}$/.test(phone)) {
+            return res.send("Phone number must contain exactly 10 digits");
+             }
+        // email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+              return res.send("Please enter a valid email address");
+             }
+        await Employee.create({ employee_code, employee_name, email,phone,
             status: "Active"
         });
 
@@ -79,19 +74,15 @@ exports.addEmployee = async (req, res) => {
         res.send("Error adding employee");
     }
 };
-// EDIT EMPLOYEE
-
+                                // EDIT EMPLOYEE
 exports.editEmployee = async (req, res) => {
     try {
-
         const employee = await Employee.findByPk(
             req.params.id
         );
-
         res.render("employeeEdit", {
             employee: employee
         });
-
     } catch (error) {
         console.log(error.message);
         res.send("error loading employee");
@@ -99,7 +90,7 @@ exports.editEmployee = async (req, res) => {
 };
 
 
-// UPDATE EMPLOYEE
+                                // UPDATE EMPLOYEE
 
 exports.updateEmployee = async (req, res) => {
     try {
@@ -131,17 +122,14 @@ exports.updateEmployee = async (req, res) => {
         );
 
         console.log("Employee updated");
-
         res.redirect(
             "/employees?message=Employee updated successfully"
         );
-
     } catch (error) {
         console.log(
             "Update error: ",
             error.message
         );
-
         res.send(error.message);
     }
 };

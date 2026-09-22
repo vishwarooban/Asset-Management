@@ -105,11 +105,14 @@ block content
 
                 label Phone
                 input(
-                    type="text"
-                    name="phone"
-                    placeholder="Phone"
-                    required
-                )
+                      type="tel"
+                      name="phone"
+                      placeholder="Phone"
+                      pattern="[0-9]{10}"
+                      maxlength="10"
+                      minlength="10"
+                      required
+                      )
 
                 .modal-actions
 
