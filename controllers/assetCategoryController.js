@@ -1,9 +1,27 @@
-const { AssetCategory } = require("../models");
-
-          // show categories
+const { AssetCategory, Asset } = require("../models");
+//        show 
 exports.showCategory = async (req, res) => {
     try {
         const categories = await AssetCategory.findAll();
+        for (const category of categories) {
+            const assetCount = await Asset.count({
+                where: {
+                    AssetCategoryId: category.id,
+                    status: "Available"
+                }
+            });
+            await AssetCategory.update(
+                {
+                    status: assetCount > 0 ? "Active" : "Inactive"
+                },
+                {
+                    where: {
+                        id: category.id
+                    }
+                }
+            );
+            category.status = assetCount > 0 ? "Active" : "Inactive";
+        }
         res.render("assetCategory", {
             categories: categories
         });
@@ -12,9 +30,7 @@ exports.showCategory = async (req, res) => {
         res.send("Error loading categories");
     }
 };
-
-
-                 // add category
+              //   add
 exports.addCategory = async (req, res) => {
     try {
         const { category_name } = req.body;

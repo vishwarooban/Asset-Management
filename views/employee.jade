@@ -1,83 +1,124 @@
-doctype html
-html
-    head
-        title Employee Master
-        link(rel="stylesheet", href="/css/style.css")
-        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css")
-        link(rel="stylesheet", href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.min.css")
-        script(src="https://cdn.datatables.net/2.3.3/js/dataTables.min.js")
-    body
+extends layout
 
-        h1 Employee Master
+block title
+    | Employee Master
 
-        //- status filter
-        form(action="/employees" method="GET")
-          label status 
-          select(name="status")
-              option(value="") All
-              option(value="Active") Active
-              option(value="Inactive") Inactive
-        
-          br
-          br
+block content
 
-          label Search 
-          input(type="text" name="search")
+    if message
+        .alert.success= message
 
-          br
-          br
+    .box
 
-          button(type="submit" class="btn btn-primary") Filter
+        form.row(action="/employees" method="GET")
 
-        //-    Add Employee
+            select(name="status")
+                option(value="") All
+                option(value="Active") Active
+                option(value="Inactive") Inactive
 
-        form(action="/employees/add" method="POST")
+            input(
+                type="text"
+                name="search"
+                placeholder="Search employee"
+            )
 
-            label Employee Code
-            input(type="text" name="employee_code")
-            br
-            br
+            button(type="submit") Filter
 
-            label Employee Name
-            input(type="text" name="employee_name")
-            br
-            br
-
-            label Email
-            input(type="email" name="email")
-            br
-            br
-
-            label Phone
-            input(type="text" name="phone")
-            br
-            br
-
-            button(type="submit" class="btn btn-primary") Add Employee
-
-             //-  Employee List
+            button(
+                type="button"
+                id="openAddEmployee"
+            ) Add Employee
 
 
-        h2 Employee List
+    .box
 
-        table(class="table table-striped table-bordered")
-
-            tr
-                th Employee Code
-                th Employee Name
-                th Email
-                th Phone
-                th Status
-                th Action
-
-            each employee in employees
-
+        table
+            thead
                 tr
-                    td= employee.employee_code
-                    td= employee.employee_name
-                    td= employee.email
-                    td= employee.phone
-                    td= employee.status
-                    td
-                        a(href="/employees/edit/" + employee.id) Edit
+                    th Employee Code
+                    th Employee Name
+                    th Email
+                    th Phone
+                    th Status
+                    th Action
+
+            tbody
+
+                each employee in employees
+
+                    tr
+                        td= employee.employee_code
+                        td= employee.employee_name
+                        td= employee.email
+                        td= employee.phone
+
+                        td
+                            span(class="status " + employee.status)= employee.status
+
+                        td
+                            a(href="/employees/edit/" + employee.id) Edit
+
+
+    //- ADD EMPLOYEE MODAL
+
+    #employeeModal.modal
+
+        .modal-content
+
+            .modal-header
+                h3 Add Employee
+
+                span(
+                    id="closeEmployeeModal"
+                    class="close"
+                ) &times;
+
+            form.modal-form(
+                action="/employees/add"
+                method="POST"
+            )
+
+                label Employee Code
+                input(
+                    type="text"
+                    name="employee_code"
+                    placeholder="Employee Code"
+                    required
+                )
+
+                label Employee Name
+                input(
+                    type="text"
+                    name="employee_name"
+                    placeholder="Employee Name"
+                    required
+                )
+
+                label Email
+                input(
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    required
+                )
+
+                label Phone
+                input(
+                    type="text"
+                    name="phone"
+                    placeholder="Phone"
+                    required
+                )
+
+                .modal-actions
+
+                    button(
+                        type="button"
+                        id="cancelEmployee"
+                        class="btn-secondary"
+                    ) Cancel
+
+                    button(type="submit") Add Employee
+
          

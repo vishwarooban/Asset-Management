@@ -1,15 +1,24 @@
-const Branch=require("./Branch");
-const Employee=require("./Employee");
-const AssetCategory=require("./AssetCategory");
-const Asset=require("./Asset");
-const AssetTransaction=require("./AssetTransaction");
+const Branch = require("./Branch");
+const Employee = require("./Employee");
+const AssetCategory = require("./AssetCategory");
+const Asset = require("./Asset");
+const AssetTransaction = require("./AssetTransaction");
 
+Branch.hasMany(Employee, {
+    foreignKey: "BranchId"
+});
 
-Branch.hasMany(Employee);
-Employee.belongsTo(Branch);
+Employee.belongsTo(Branch, {
+    foreignKey: "BranchId"
+});
 
-Branch.hasMany(Asset);
-Asset.belongsTo(Branch);
+Branch.hasMany(Asset, {
+    foreignKey: "BranchId"
+});
+
+Asset.belongsTo(Branch, {
+    foreignKey: "BranchId"
+});
 
 AssetCategory.hasMany(Asset, {
     foreignKey: "AssetCategoryId",
@@ -21,10 +30,28 @@ Asset.belongsTo(AssetCategory, {
     as: "category"
 });
 
-Asset.hasMany(AssetTransaction);
-AssetTransaction.belongsTo(Asset);
+Asset.hasMany(AssetTransaction, {
+    foreignKey: "AssetId",
+    as: "transactions"
+});
 
-Asset.hasMany(AssetTransaction);
-AssetTransaction.belongsTo(Employee);
+AssetTransaction.belongsTo(Asset, {
+    foreignKey: "AssetId"
+});
 
-module.exports={Branch,Asset,AssetCategory,AssetTransaction,Employee};
+Employee.hasMany(AssetTransaction, {
+    foreignKey: "EmployeeId",
+    as: "transactions"
+});
+
+AssetTransaction.belongsTo(Employee, {
+    foreignKey: "EmployeeId"
+});
+
+module.exports = {
+    Branch,
+    Asset,
+    AssetCategory,
+    AssetTransaction,
+    Employee
+};

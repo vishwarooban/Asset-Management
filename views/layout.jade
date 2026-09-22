@@ -1,0 +1,137 @@
+    doctype html
+html
+    head
+        title Asset Management
+
+        link(
+            rel="stylesheet"
+            href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.min.css"
+        )
+
+        link(
+            rel="stylesheet"
+            href="/css/style.css"
+        )
+
+        script(
+            src="https://cdn.datatables.net/2.3.3/js/dataTables.min.js"
+        )
+
+    body
+
+        .sidebar
+            h2 Asset Management
+
+            a(href="/assets") Asset Master
+            a(href="/asset-categories") Categories
+            a(href="/employees") Employees
+            a(href="/issue-asset") Issue Asset
+            a(href="/return-asset") Return Asset
+            a(href="/scrap-asset") Scrap Asset
+            a(href="/asset-history") Asset History
+            a(href="/stock") Stock View
+
+        .main
+
+            .header
+                h1
+                    block title
+
+            //- SUCCESS MESSAGE
+            if message
+               .alert= message
+            
+
+            block content
+
+ script.
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // SUCCESS MESSAGE
+        const alertBox = document.querySelector(".alert");
+
+        if (alertBox) {
+
+            setTimeout(function () {
+                alertBox.classList.add("hide");
+            }, 2500);
+
+        }
+
+        // REMOVE MESSAGE FROM URL
+        const url = new URL(window.location.href);
+
+        if (url.searchParams.has("message")) {
+
+            url.searchParams.delete("message");
+
+            window.history.replaceState(
+                {},
+                document.title,
+                url.pathname + url.search
+            );
+        }
+
+
+        // EMPLOYEE MODAL
+        const openButton =
+            document.getElementById("openAddEmployee");
+
+        const modal =
+            document.getElementById("employeeModal");
+
+        const closeButton =
+            document.getElementById("closeEmployeeModal");
+
+        const cancelButton =
+            document.getElementById("cancelEmployee");
+
+
+        if (openButton && modal) {
+
+            openButton.addEventListener(
+                "click",
+                function () {
+                    modal.style.display = "block";
+                }
+            );
+
+        }
+
+
+        if (closeButton && modal) {
+
+            closeButton.addEventListener(
+                "click",
+                function () {
+                    modal.style.display = "none";
+                }
+            );
+
+        }
+
+
+        if (cancelButton && modal) {
+
+            cancelButton.addEventListener(
+                "click",
+                function () {
+                    modal.style.display = "none";
+                }
+            );
+
+        }
+
+
+        window.addEventListener(
+            "click",
+            function (event) {
+
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+
+            }
+        );
+
+    });

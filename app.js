@@ -13,12 +13,10 @@ const scrapAssetRoutes = require("./routes/scrapAssetRoutes");
 const assetHistoryRoutes = require("./routes/assetHistoryRoutes");
 
 const app = express();
-app.get("/css/style.css", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "css", "style.css"));
-});
 
 app.set("view engine", "jade");
 app.use(express.urlencoded({extended:true}));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", employeeRoutes);
 app.use("/", assetCategoryRoutes);
@@ -30,12 +28,14 @@ app.use("/", scrapAssetRoutes);
 app.use("/", assetHistoryRoutes);
 
 app.get("/", (req, res) => {
-    res.send("Asset Management System");
+    res.redirect("/assets");
 });
+console.log("DB NAME:", sequelize.getDatabaseName());
+console.log("DB HOST:", sequelize.config.host);
 sequelize.authenticate()
     .then(() => {
         console.log("PostgreSQL connected successfully");
-        return sequelize.sync();
+        return sequelize.sync({ alter: true })
     })
     .then(()=>{
         console.log("Tables Created Successfully");
@@ -47,6 +47,18 @@ sequelize.authenticate()
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
+
+server.on("close", () => {
+    console.log("SERVER CLOSED");
+});
+
+server.on("error", (err) => {
+    console.log("SERVER ERROR:", err);
+});
+
+setInterval(() => {
+    console.log("SERVER ALIVE");
+}, 5000);
